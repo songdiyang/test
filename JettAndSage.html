@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>互动页面</title>
+    <style>
+        body {
+            background-color: lightpink;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            position: relative;
+        }
+        
+        img {
+            width: 200px;
+            margin-bottom: 20px;
+            transition: transform 0.3s ease;
+            user-select: none;
+            /* 禁止图片被选中复制 */
+        }
+        
+        p {
+            margin-bottom: 20px;
+            transition: transform 0.3s ease;
+            user-select: none;
+            /* 禁止文字被选中复制 */
+        }
+        
+        button {
+            padding: 10px 20px;
+            margin: 5px;
+            border: none;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .pink-button {
+            background-color: pink;
+        }
+        
+        .blue-button {
+            background-color: lightblue;
+        }
+        
+        .button-container {
+            position: relative;
+            width: 200px;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        #yes-button,
+        #no-button {
+            position: absolute;
+        }
+        
+        #yes-button {
+            left: 0;
+        }
+        
+        #no-button {
+            right: 0;
+        }
+        /* 新增样式，用于将文字置于图片之上 */
+        
+        .text-on-image {
+            position: absolute;
+            top: 30%;
+            /* 让文字位置上移，可按需调整 */
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1;
+            font-size: 24px;
+            /* 增大文字大小，可按需调整 */
+        }
+    </style>
+</head>
+
+<body>
+    <div id="image-text-container">
+        <img id="main-image" src="1.png" alt="图片">
+        <p id="text">可以和我一起玩吗?</p>
+    </div>
+    <div class="button-container">
+        <button class="pink-button" id="yes-button">可以</button>
+        <button class="blue-button" id="no-button">不可以</button>
+    </div>
+    <script>
+        const mainImage = document.getElementById('main-image');
+        const text = document.getElementById('text');
+        const yesButton = document.getElementById('yes-button');
+        const noButton = document.getElementById('no-button');
+        const imageTextContainer = document.getElementById('image-text-container');
+        let imageIndex = 1;
+        let canButtonSize = 1;
+        let pushUpDistance = 0;
+        const initialYesButtonWidth = 100;
+
+        noButton.addEventListener('click', function() {
+            imageIndex++;
+            if (imageIndex > 3) {
+                imageIndex = 3;
+            }
+            mainImage.src = `${imageIndex}.png`;
+            canButtonSize += 0.5;
+            yesButton.style.transform = `scale(${canButtonSize})`;
+            // 计算可以按钮变大后增加的宽度
+            const increasedWidth = initialYesButtonWidth * (canButtonSize - 1);
+            noButton.style.transform = `translateX(${increasedWidth}px)`;
+            pushUpDistance += 10;
+            imageTextContainer.style.transform = `translateY(-${pushUpDistance}px)`;
+        });
+
+        yesButton.addEventListener('click', function() {
+            // 删除所有元素
+            document.body.innerHTML = '';
+
+            // 创建新的图片元素
+            const newImage = document.createElement('img');
+            newImage.src = '4.png';
+            newImage.style.width = '200px';
+            newImage.style.position = 'relative';
+
+            // 创建新的文字元素
+            const newText = document.createElement('p');
+            newText.textContent = '!!!!喜欢你!!(๑❛ᴗ❛๑)';
+            newText.style.position = 'absolute';
+            newText.style.top = '30%';
+            newText.style.left = '50%';
+            newText.style.transform = 'translate(-50%, -50%)';
+            newText.style.zIndex = '1';
+            newText.style.fontSize = '24px';
+            newText.style.userSelect = 'none';
+
+            // 将新元素添加到页面
+            document.body.appendChild(newImage);
+            document.body.appendChild(newText);
+        });
+
+        text.addEventListener('click', function() {
+            if (text.classList.contains('text-on-image')) {
+                // 恢复图片和文字容器的位置到中心
+                pushUpDistance = 0;
+                imageTextContainer.style.transform = 'translateY(0px)';
+                // 恢复图片为初始图片
+                mainImage.src = '1.png';
+                // 恢复按钮显示
+                yesButton.style.display = 'block';
+                noButton.style.display = 'block';
+                // 恢复按钮大小
+                canButtonSize = 1;
+                yesButton.style.transform = 'scale(1)';
+                noButton.style.transform = 'translateX(0px)';
+                // 恢复文字内容
+                text.textContent = '可以和我一起玩吗?';
+                text.classList.remove('text-on-image');
+            }
+        });
+    </script>
+</body>
+
+</html>
